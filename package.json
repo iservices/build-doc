@@ -1,6 +1,6 @@
 {
   "name": "build-doc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build tasks for creating documentation.",
   "main": "src/index.js",
   "files": [

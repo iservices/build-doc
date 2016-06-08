@@ -25,16 +25,16 @@ var commentPattern = /&#42;/g;
 var longnamePattern = /[:]/g;
 
 /**
- * Turn the given text into block quote formatted text.
+ * Turn the given text into block formatted text.
  *
- * @param {String} text - The text to turn into block quote text.
- * @return {String} The block quote formatted text.
+ * @param {String} text - The text to turn into block text.
+ * @return {String} The block formatted text.
  */
 function createBlockText(text) {
   if (!text) {
     return '';
   }
-  return '> ' + text.replace(newlinePattern, ' ');
+  return text.replace(newlinePattern, ' ');
 }
 
 /**
@@ -161,9 +161,9 @@ function createParamTable(node) {
     return '';
   }
 
-  result = '> | Param | Type | Attributes | Description |\n> | --- | --- | --- | --- |\n';
+  result = '| Param | Type | Attributes | Description |\n| --- | --- | --- | --- |\n';
   node.parameters.forEach(function (param) {
-    result += '> | '
+    result += '| '
            + param.name + ' | `'
            + createType(param.type) + '` | '
            + (param.optional ? 'optional' : ' ') + ' | '
@@ -178,14 +178,12 @@ function createParamTable(node) {
  *
  * @param {Object} node - The node to write examples out for.
  * @param {Stream} out - The stream to write out to.
- * @param {Boolean} blockQuote - When true the examples will be written out within a block quote.
  * @return {void}
  */
-function writeExamples(node, out, blockQuote) {
+function writeExamples(node, out) {
   var match = null;
   var caption = '';
   var text = '';
-  var prefix = blockQuote ? '> ' : '';
   if (node && node.examples && node.examples.length) {
     node.examples.forEach(function (example) {
       match = captionPattern.exec(example);
@@ -197,17 +195,13 @@ function writeExamples(node, out, blockQuote) {
         caption = null;
       }
       if (caption) {
-        out.write(prefix + 'Example *(' + caption + ')*:  \n');
+        out.write('Example *(' + caption + ')*:  \n');
       } else {
-        out.write(prefix + 'Example:  \n');
+        out.write('Example:  \n');
       }
-      out.write(prefix + '```js\n');
-      if (blockQuote) {
-        out.write(createBlockText(escapeComment(text)));
-      } else {
-        out.write(escapeComment(text));
-      }
-      out.write('\n' + prefix + '```  \n');
+      out.write('```js\n');
+      out.write(escapeComment(text));
+      out.write('\n```  \n');
     });
   }
 }
@@ -230,12 +224,12 @@ function writeFunction(node, out) {
   out.write('  \n');
 
   if (node.parameters && node.parameters.length) {
-    out.write('> Parameters:  \n\n');
+    out.write('**Parameters:**  \n\n');
     out.write(createParamTable(node) + '  \n');
   }
 
   if (node.returns) {
-    out.write('> Returns: `' + createType(node.returns.type) + '`  \n');
+    out.write('**Returns:** `' + createType(node.returns.type) + '`  \n');
     if (node.returns.description) {
       out.write(createBlockText(node.returns.description) + '  \n');
     }
@@ -259,9 +253,9 @@ function writeFunction(node, out) {
 function writeMember(node, out) {
   out.write('<a name="' + escapeLongname(node.longname) + '"></a>\n');
   if (node.scope === 'static') {
-    out.write('> `(static) ' + node.name + ' : ' + createType(node.type) + '`  \n');
+    out.write('`(static) ' + node.name + ' : ' + createType(node.type) + '`  \n');
   } else {
-    out.write('> `' + node.name + ' : ' + createType(node.type) + '`  \n');
+    out.write('`' + node.name + ' : ' + createType(node.type) + '`  \n');
   }
   if (node.description) {
     out.write(createBlockText(node.description) + '  \n');
