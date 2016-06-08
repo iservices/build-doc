@@ -4,7 +4,8 @@ This package is currently in **BETA**
 
 ## Overview
 This is a node package that defines gulp tasks that can be used to generate documentation from code.
-The [jsdoc](https://www.npmjs.com/package/jsdoc) package is used for generating a documentation file.
+The [jsdoc](https://www.npmjs.com/package/jsdoc) package is used for generating markdown documentation which
+can be included in a README.md file.
 
 ## Guide
 
@@ -40,16 +41,17 @@ In addition to executing tasks from the console you can also chain the gulp doc 
 
 ## Modules
 
-* <a href="#module:build-doc">build-doc</a>
+* [build-doc](#module.build-doc)
   * Functions
-  * [registerTasks](#module:build-doc~registerTasks)
+  * [registerTasks](#module.build-doc~registerTasks)
 
-<br/><a name="module:build-doc"></a>
+
+<br/><a name="module.build-doc"></a>
 ## **build-doc** (module)  
 Register gulp tasks used to generate documentation using jsdoc.  
 
 ### **Functions**  
-<a name="module:build-doc~registerTasks"></a>
+<a name="module.build-doc~registerTasks"></a>
 ## registerTasks(opts) ⇒ void  
 > Register documentation generation tasks.  
   

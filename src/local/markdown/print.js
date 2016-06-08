@@ -20,75 +20,9 @@ var pipePattern = /\|/g;
 var commentPattern = /&#42;/g;
 
 /**
- * Used to print the index of all components.
- *
- * @param {Object} node - The node in the object tree to print the table of contents for.
- * @param {Stream} out - The stream to write the index out to.
- * @return {void}
+ * regex used to replace bad longname characters for links
  */
-function printIndex(node, out) {
-  if (!node) {
-    return;
-  }
-
-  //
-  // classes
-  //
-  if (node.classes) {
-    out.write('## Classes\n\n<ul>\n');
-    node.classes.forEach(function (cls) {
-      out.write('<li><a href="#' + cls.longname + '">' + cls.name + '</a>\n');
-
-      if (cls.properties) {
-        out.write('<ul>Members');
-        cls.properties.forEach(function (prop) {
-          out.write('<li><a href="#' + prop.longname + '">' + prop.name + '</a>\n');
-        });
-        out.write('</ul><br/>');
-      }
-
-      if (cls.functions) {
-        out.write('<ul>Functions');
-        cls.functions.forEach(function (func) {
-          out.write('<li><a href="#' + func.longname + '">' + func.name + '</a>\n');
-        });
-        out.write('</ul><br/>');
-      }
-
-      out.write('</li>\n');
-    });
-    out.write('</ul>');
-  }
-
-  //
-  // modules
-  //
-  if (node.modules) {
-    out.write('## Modules\n\n<ul>\n');
-    node.modules.forEach(function (mod) {
-      out.write('<li><a href="#' + mod.longname + '">' + mod.name + '</a>\n');
-
-      if (mod.properties) {
-        out.write('<ul>Members');
-        mod.properties.forEach(function (prop) {
-          out.write('<li><a href="#' + prop.longname + '">' + prop.name + '</a>\n');
-        });
-        out.write('</ul><br/>');
-      }
-
-      if (mod.functions) {
-        out.write('<ul>Functions');
-        mod.functions.forEach(function (func) {
-          out.write('<li><a href="#' + func.longname + '">' + func.name + '</a>\n');
-        });
-        out.write('</ul><br/>');
-      }
-
-      out.write('</li>\n');
-    });
-    out.write('</ul>\n\n');
-  }
-}
+var longnamePattern = /[:]/g;
 
 /**
  * Turn the given text into block quote formatted text.
@@ -140,6 +74,19 @@ function escapeComment(text) {
     return '';
   }
   return text.replace(commentPattern, '*');
+}
+
+/**
+ * Replace bad characters for links.
+ *
+ * @param {String} name - The longname to escape.
+ * @return {String} The escaped name.
+ */
+function escapeLongname(name) {
+  if (!name) {
+    return '';
+  }
+  return name.replace(longnamePattern, '.');
 }
 
 /**
@@ -274,7 +221,7 @@ function writeExamples(node, out, blockQuote) {
  */
 function writeFunction(node, out) {
   if (node.kind !== 'constructor') {
-    out.write('<a name="' + node.longname + '"></a>\n');
+    out.write('<a name="' + escapeLongname(node.longname) + '"></a>\n');
   }
   out.write('## ' + createSignature(node) + '  \n');
   if (node.description) {
@@ -310,7 +257,7 @@ function writeFunction(node, out) {
  * @return {void}
  */
 function writeMember(node, out) {
-  out.write('<a name="' + node.longname + '"></a>\n');
+  out.write('<a name="' + escapeLongname(node.longname) + '"></a>\n');
   if (node.scope === 'static') {
     out.write('> `(static) ' + node.name + ' : ' + createType(node.type) + '`  \n');
   } else {
@@ -357,7 +304,7 @@ function printNode(node, out) {
     //
     // class
     //
-    out.write('<br/><a name="' + node.longname + '"></a>\n');
+    out.write('<br/><a name="' + escapeLongname(node.longname) + '"></a>\n');
     if (node.extends) {
       out.write('## **' + node.name + '** (class extends ' + node.extends + ')  \n');
     } else {
@@ -369,7 +316,7 @@ function printNode(node, out) {
     //
     // module
     //
-    out.write('<br/><a name="' + node.longname + '"></a>\n');
+    out.write('<br/><a name="' + escapeLongname(node.longname) + '"></a>\n');
     out.write('## **' + node.name + '** (module)  \n');
     out.write(node.description + '  \n\n');
     writeExamples(node, out, false);
@@ -389,6 +336,69 @@ function printNode(node, out) {
   printCollection(node.modules, '', out);
   printCollection(node.properties, 'Members', out);
   printCollection(node.functions, 'Functions', out);
+}
+
+/**
+ * Used to print the index of all components.
+ *
+ * @param {Object} node - The node in the object tree to print the table of contents for.
+ * @param {Stream} out - The stream to write the index out to.
+ * @return {void}
+ */
+function printIndex(node, out) {
+  if (!node) {
+    return;
+  }
+
+  //
+  // classes
+  //
+  if (node.classes) {
+    out.write('## Classes\n\n');
+    node.classes.forEach(function (cls) {
+      out.write('* [' + cls.name + '](#' + escapeLongname(cls.longname) + ')\n');
+
+      if (cls.properties) {
+        out.write('  * Members\n');
+        cls.properties.forEach(function (prop) {
+          out.write('  * [' + prop.name + '](#' + escapeLongname(prop.longname) + ')\n');
+        });
+      }
+
+      if (cls.functions) {
+        out.write('  * Functions\n');
+        cls.functions.forEach(function (func) {
+          out.write('  * [' + func.name + '](#' + escapeLongname(func.longname) + ')\n');
+        });
+      }
+    });
+  }
+
+  //
+  // modules
+  //
+  if (node.modules) {
+    out.write('## Modules\n\n');
+    node.modules.forEach(function (mod) {
+      out.write('* [' + mod.name + '](#' + escapeLongname(mod.longname) + ')\n');
+
+      if (mod.properties) {
+        out.write('  * Members\n');
+        mod.properties.forEach(function (prop) {
+          out.write('  * [' + prop.name + '](#' + escapeLongname(prop.longname) + ')\n');
+        });
+      }
+
+      if (mod.functions) {
+        out.write('  * Functions\n');
+        mod.functions.forEach(function (func) {
+          out.write('  * [' + func.name + '](#' + escapeLongname(func.longname) + ')\n');
+        });
+      }
+    });
+  }
+
+  out.write('\n\n');
 }
 
 /**
