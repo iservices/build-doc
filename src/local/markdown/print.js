@@ -372,6 +372,9 @@ function printIndex(node, out) {
   // modules
   //
   if (node.modules) {
+    if (node.classes) {
+      out.write('\n');
+    }
     out.write('## Modules\n\n');
     node.modules.forEach(function (mod) {
       out.write('* [' + mod.name + '](#' + escapeLongname(mod.longname) + ')\n');
