@@ -40,7 +40,7 @@ In addition to executing tasks from the console you can also chain the gulp doc 
 
 ## Modules
 
-* [build-doc](#module:build-doc)
+* <a href="#module:build-doc">build-doc</a>
   * Functions
   * [registerTasks](#module:build-doc~registerTasks)
 
