@@ -24,13 +24,13 @@
   "dependencies": {
     "globby": "^4.1.0",
     "gulp": "^3.9.1",
-    "gulp-watch": "^4.3.6",
     "jsdoc": "^3.4.0",
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {
     "build-lint": "^1.0.10",
     "build-test": "^1.0.9",
-    "del": "^2.2.0"
+    "del": "^2.2.0",
+    "gulp-watch": "^4.3.6"
   }
 }
