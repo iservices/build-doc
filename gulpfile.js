@@ -1,5 +1,5 @@
 const test = require('build-test');
-const doc = require('./index');
+const doc = require('./src/index');
 
 test.registerTasks({
   testGlob: ['src/tests/**/*.spec.js'],

@@ -1,9 +1,11 @@
 /**
  * The entry point for this package.
+ *
+ * @ignore
  */
 'use strict';
 
-const tasks = require('./src/local/docTasks');
+const tasks = require('./local/docTasks');
 
 module.exports = {
   registerTasks: tasks

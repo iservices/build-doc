@@ -1,4 +1,4 @@
-const doc = require('../../../../index');
+const doc = require('../../../index');
 
 doc.registerTasks({
   glob: '**/*.[jt]s',
