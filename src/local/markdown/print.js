@@ -214,7 +214,7 @@ function createParamTable(node) {
     return '';
   }
 
-  result = '> | Param | Type | Attributes | Description |\n> | --- | --- | --- |\n';
+  result = '> | Param | Type | Attributes | Description |\n> | --- | --- | --- | --- |\n';
   node.parameters.forEach(function (param) {
     result += '> | '
            + param.name + ' | `'
