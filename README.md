@@ -52,7 +52,7 @@ Register gulp tasks used to generate documentation using jsdoc.
 
 ### **Functions**  
 <a name="module.build-doc~registerTasks"></a>
-## registerTasks(opts) ⇒ void  
+## `registerTasks(opts) ⇒ void`  
 > Register documentation generation tasks.  
   
 > Parameters:  
