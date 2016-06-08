@@ -1,0 +1,35 @@
+{
+  "name": "build-doc",
+  "version": "1.0.0",
+  "description": "Build tasks for creating documentation.",
+  "main": "src/index.js",
+  "files": [
+    "src/local/"
+  ],
+  "scripts": {
+    "pre-publish": "gulp test",
+    "test": "gulp test-without-coverage",
+    "doc": "gulp doc"
+  },
+  "keywords": [
+    "build",
+    "documentation"
+  ],
+  "author": "natewallace@gmail.com",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iservices/build-doc.git"
+  },
+  "dependencies": {
+    "globby": "^4.1.0",
+    "gulp": "^3.9.1",
+    "gulp-watch": "^4.3.6",
+    "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {
+    "build-lint": "^1.0.10",
+    "build-test": "^1.0.9",
+    "del": "^2.2.0"
+  }
+}
