@@ -52,20 +52,22 @@ Register gulp tasks used to generate documentation using jsdoc.
 
 ### **Functions**  
 <a name="module:build-doc~registerTasks"></a>
-## `registerTasks(opts) ⇒ void`  
-Register documentation generation tasks.  
+## registerTasks(opts) ⇒ void  
+> Register documentation generation tasks.  
   
-Parameters:  
+> Parameters:  
 
-| Param | Type | Attributes | Description |
-| --- | --- | --- |
-| opts | `Object` |   | The configuration options. |
-| opts.glob | `String or Array.<String>` |   | Glob pattern relative to the inputDir that identifies the files to document. |
-| opts.inputDir | `String` | optional | The root directory that contains the files to create documentation for. |
-| opts.templateFile | `String` | optional | A path to a file that is used as a template.  When provided the template will                                       be written out with the first occurance of the text `{{jsdoc}}` replaced                                       with the markdown that is generated. |
-| opts.outputDir | `String` | optional | The output directory. |
-| opts.outputFile | `String` |   | The file path relative to outputDir that is written with the documentation. |
-| opts.tasksPrefix | `String` | optional | An optional prefix to apply to task names. |
-| opts.tasksDependencies | `Array.<String>` | optional | Optional array of tasks names that must be completed before these registered tasks runs. |
+> | Param | Type | Attributes | Description |
+> | --- | --- | --- | --- |
+> | opts | `Object` |   | The configuration options. |
+> | opts.glob | `String or Array.<String>` |   | Glob pattern relative to the inputDir that identifies the files to document. |
+> | opts.inputDir | `String` | optional | The root directory that contains the files to create documentation for. |
+> | opts.templateFile | `String` | optional | A path to a file that is used as a template.  When provided the template will                                       be written out with the first occurance of the text `{{jsdoc}}` replaced                                       with the markdown that is generated. |
+> | opts.outputDir | `String` | optional | The output directory. |
+> | opts.outputFile | `String` |   | The file path relative to outputDir that is written with the documentation. |
+> | opts.tasksPrefix | `String` | optional | An optional prefix to apply to task names. |
+> | opts.tasksDependencies | `Array.<String>` | optional | Optional array of tasks names that must be completed before these registered tasks runs. |
   
-Returns: `void`  
+> Returns: `void`  
+
+
