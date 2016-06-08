@@ -64,9 +64,9 @@ Register gulp tasks used to generate documentation using jsdoc.
 > | opts.inputDir | `String` | optional | The root directory that contains the files to create documentation for. |
 > | opts.templateFile | `String` | optional | A path to a file that is used as a template.  When provided the template will                                       be written out with the first occurance of the text `{{jsdoc}}` replaced                                       with the markdown that is generated. |
 > | opts.outputDir | `String` | optional | The output directory. |
-> | opts.outputFile | `String` |   | The file path relative to outputDir that is written with the documentation. |
+> | opts.outputFile | `String` |   | The file path relative to outputDir that the documentation is written to. |
 > | opts.tasksPrefix | `String` | optional | An optional prefix to apply to task names. |
-> | opts.tasksDependencies | `Array.<String>` | optional | Optional array of tasks names that must be completed before these registered tasks runs. |
+> | opts.tasksDependencies | `Array.<String>` | optional | Optional array of tasks names that must be completed before these registered tasks run. |
   
 > Returns: `void`  
 

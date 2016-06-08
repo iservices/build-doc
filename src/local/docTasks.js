@@ -134,9 +134,9 @@ function notify(err, title, message) {
  *                                       be written out with the first occurance of the text `{{jsdoc}}` replaced
  *                                       with the markdown that is generated.
  * @param {String} [opts.outputDir] - The output directory.
- * @param {String} opts.outputFile - The file path relative to outputDir that is written with the documentation.
+ * @param {String} opts.outputFile - The file path relative to outputDir that the documentation is written to.
  * @param {String} [opts.tasksPrefix] - An optional prefix to apply to task names.
- * @param {String[]} [opts.tasksDependencies] - Optional array of tasks names that must be completed before these registered tasks runs.
+ * @param {String[]} [opts.tasksDependencies] - Optional array of tasks names that must be completed before these registered tasks run.
  * @returns {void}
  */
 function registerTasks(opts) {
