@@ -19,23 +19,11 @@ var pipePattern = /\|/g;
 // regex used to find special case where comments appear in example
 var commentPattern = /&#42;/g;
 
-/**
- * regex used to replace bad longname characters for links
- */
+// regex used to replace bad longname characters for links
 var longnamePattern = /[:]/g;
 
-/**
- * Turn the given text into block formatted text.
- *
- * @param {String} text - The text to turn into block text.
- * @return {String} The block formatted text.
- */
-function createBlockText(text) {
-  if (!text) {
-    return '';
-  }
-  return text.replace(newlinePattern, ' ');
-}
+// regex used to process links
+var linkPattern = /{\s*@link\s*([^|}]*)(\|)?([^}]*)?}/g;
 
 /**
  * Replace newline characters with html breaks.
@@ -86,7 +74,116 @@ function escapeLongname(name) {
   if (!name) {
     return '';
   }
-  return name.replace(longnamePattern, '.');
+  return name.replace(longnamePattern, '_');
+}
+
+/**
+ * Format link text so it will display correctly in markdown.
+ *
+ * @param {RegExpMatchArray | String} match - The regex matched link text to format or a jsdoc namepath value.
+ * @return {String} The formatted link.
+ */
+function formatLink(match) {
+  var address = '';
+  var display = '';
+
+  if (Array.isArray(match)) {
+    // process a regex match
+    if (match.length > 1) {
+      address = match[1] || '';
+    }
+    if (match.length > 3) {
+      display = match[3] || address;
+    }
+    if (address && address.indexOf('http') !== 0) {
+      address = escapeText(address, { longname: true });
+      address = '#' + address;
+    }
+    return '[' + display + '](' + address + ')';
+  } else if (typeof match === 'string') {
+    // process a simple namepath value
+    return '[' + match + '](' + escapeText(match, { longname: true }) + ')';
+  }
+  return '';
+}
+
+/**
+ * Replace link directives with the markdown equivalent.
+ *
+ * @param {String} text - The text to escape.
+ * @param {Boolean} [force] - When set to true the text will be treated as a link even if it doesn't match the pattern.
+ * @return {String} The escaped text.
+ */
+function escapeLink(text, force) {
+  var match = null;
+  var result = [];
+  var lastIndex = 0;
+
+  if (!text) {
+    return '';
+  }
+
+  while ((match = linkPattern.exec(text)) !== null) { // eslint-disable-line no-cond-assign
+    result.push(text.slice(lastIndex, match.index));
+    result.push(formatLink(match));
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex) {
+    result.push(text.slice(lastIndex));
+    return result.join('');
+  } else if (force) {
+    return formatLink(text);
+  }
+  return text;
+}
+
+/**
+ * Escape the text using the given option.
+ *
+ * @param {String} text - The text to escape when true.
+ * @param {Object} options - The escape optons when true.
+ * @param {Boolean} options.newline - Escape newlines when true.
+ * @param {Boolean} options.pipes - Escape pipes when true.
+ * @param {Boolean} options.comment - Escape comments when true.
+ * @param {Boolean} options.longname - Escape longname when true.
+ * @param {Boolean} options.link - Escape link when true.
+ * @return {String} The escaped text.
+ */
+function escapeText(text, options) {
+  var result = text;
+  var opts = options || {};
+
+  if (opts.newline) {
+    result = escapeNewline(result);
+  }
+  if (opts.pipes) {
+    result = escapePipes(result);
+  }
+  if (opts.comment) {
+    result = escapeComment(result);
+  }
+  if (opts.longname) {
+    result = escapeLongname(result);
+  }
+  if (opts.link) {
+    result = escapeLink(result);
+  }
+
+  return result;
+}
+
+/**
+ * Turn the given text into block formatted text.
+ *
+ * @param {String} text - The text to turn into block text.
+ * @return {String} The block formatted text.
+ */
+function createBlockText(text) {
+  if (!text) {
+    return '';
+  }
+  return escapeText(text.replace(newlinePattern, ' '), { link: true });
 }
 
 /**
@@ -167,7 +264,7 @@ function createParamTable(node) {
            + param.name + ' | `'
            + createType(param.type) + '` | '
            + (param.optional ? 'optional' : ' ') + ' | '
-           + escapeNewline(escapePipes(param.description)) + ' |\n';
+           + escapeText(param.description, { newline: true, pipes: true, link: true }) + ' |\n';
   });
 
   return result;
@@ -200,9 +297,27 @@ function writeExamples(node, out) {
         out.write('Example:  \n');
       }
       out.write('```js\n');
-      out.write(escapeComment(text));
+      out.write(escapeText(text, { comment: true }));
       out.write('\n```  \n');
     });
+  }
+}
+
+/**
+ * Write the see tags out.
+ *
+ * @param {Object} node - The node to write out the see tags for.
+ * @param {Stream} out - The stream to write out to.
+ * @return {void}
+ */
+function writeSees(node, out) {
+  var result = [];
+  if (node && node.see && node.see.length) {
+    out.write('** See:** ');
+    node.see.forEach(function (see) {
+      result.push(formatLink(see));
+    });
+    out.write(result.join(', ') + '  \n');
   }
 }
 
@@ -215,7 +330,7 @@ function writeExamples(node, out) {
  */
 function writeFunction(node, out) {
   if (node.kind !== 'constructor') {
-    out.write('<a name="' + escapeLongname(node.longname) + '"></a>\n');
+    out.write('<a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
   }
   out.write('## ' + createSignature(node) + '  \n');
   if (node.description) {
@@ -238,8 +353,11 @@ function writeFunction(node, out) {
   out.write('\n');
 
   if (node.examples && node.examples.length) {
-    writeExamples(node, out, true);
+    writeExamples(node, out);
   }
+
+  writeSees(node, out);
+
   out.write('\n');
 }
 
@@ -251,11 +369,11 @@ function writeFunction(node, out) {
  * @return {void}
  */
 function writeMember(node, out) {
-  out.write('<a name="' + escapeLongname(node.longname) + '"></a>\n');
+  out.write('<a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
   if (node.scope === 'static') {
-    out.write('`(static) ' + node.name + ' : ' + createType(node.type) + '`  \n');
+    out.write('## (static) ' + node.name + ' : `' + createType(node.type) + '`  \n');
   } else {
-    out.write('`' + node.name + ' : ' + createType(node.type) + '`  \n');
+    out.write('## ' + node.name + ' : `' + createType(node.type) + '`  \n');
   }
   if (node.description) {
     out.write(createBlockText(node.description) + '  \n');
@@ -277,7 +395,7 @@ function printCollection(items, title, out) {
       out.write('### **' + title + '**  \n');
     }
     items.forEach(function (item) {
-      printNode(item, out); /* eslint-disable-line */
+      printNode(item, out); // eslint-disable-line no-use-before-define
     });
   }
 }
@@ -298,22 +416,23 @@ function printNode(node, out) {
     //
     // class
     //
-    out.write('<br/><a name="' + escapeLongname(node.longname) + '"></a>\n');
+    out.write('<br/><a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
     if (node.extends) {
       out.write('## **' + node.name + '** (class extends ' + node.extends + ')  \n');
     } else {
       out.write('## **' + node.name + '** (class)  \n');
     }
-    out.write(node.description + '  \n\n');
+    out.write(createBlockText(node.description) + '  \n\n');
     writeFunction(node.constructor, out);
   } else if (node.kind === 'module') {
     //
     // module
     //
-    out.write('<br/><a name="' + escapeLongname(node.longname) + '"></a>\n');
+    out.write('<br/><a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
     out.write('## **' + node.name + '** (module)  \n');
-    out.write(node.description + '  \n\n');
-    writeExamples(node, out, false);
+    out.write(createBlockText(node.description) + '  \n\n');
+    writeExamples(node, out);
+    writeSees(node, out);
   } else if (node.kind === 'function') {
     //
     // function
@@ -350,19 +469,19 @@ function printIndex(node, out) {
   if (node.classes) {
     out.write('## Classes\n\n');
     node.classes.forEach(function (cls) {
-      out.write('* [' + cls.name + '](#' + escapeLongname(cls.longname) + ')\n');
+      out.write('* [' + cls.name + '](#' + escapeText(cls.longname, { longname: true }) + ')\n');
 
       if (cls.properties) {
         out.write('  * Members\n');
         cls.properties.forEach(function (prop) {
-          out.write('  * [' + prop.name + '](#' + escapeLongname(prop.longname) + ')\n');
+          out.write('  * [' + prop.name + '](#' + escapeText(prop.longname, { longname: true }) + ')\n');
         });
       }
 
       if (cls.functions) {
         out.write('  * Functions\n');
         cls.functions.forEach(function (func) {
-          out.write('  * [' + func.name + '](#' + escapeLongname(func.longname) + ')\n');
+          out.write('  * [' + func.name + '](#' + escapeText(func.longname, { longname: true }) + ')\n');
         });
       }
     });
@@ -377,19 +496,19 @@ function printIndex(node, out) {
     }
     out.write('## Modules\n\n');
     node.modules.forEach(function (mod) {
-      out.write('* [' + mod.name + '](#' + escapeLongname(mod.longname) + ')\n');
+      out.write('* [' + mod.name + '](#' + escapeText(mod.longname, { longname: true }) + ')\n');
 
       if (mod.properties) {
         out.write('  * Members\n');
         mod.properties.forEach(function (prop) {
-          out.write('  * [' + prop.name + '](#' + escapeLongname(prop.longname) + ')\n');
+          out.write('  * [' + prop.name + '](#' + escapeText(prop.longname, { longname: true }) + ')\n');
         });
       }
 
       if (mod.functions) {
         out.write('  * Functions\n');
         mod.functions.forEach(function (func) {
-          out.write('  * [' + func.name + '](#' + escapeLongname(func.longname) + ')\n');
+          out.write('  * [' + func.name + '](#' + escapeText(func.longname, { longname: true }) + ')\n');
         });
       }
     });

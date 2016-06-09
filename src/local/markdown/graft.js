@@ -37,6 +37,7 @@ function graft(parentNode, childNodes, parentLongname) {
           'longname': element.longname,
           'kind': element.kind,
           'description': element.description || '',
+          'see': element.see,
           'access': element.access || '',
           'virtual': !!element.virtual
         };
@@ -57,6 +58,7 @@ function graft(parentNode, childNodes, parentLongname) {
           'longname': element.longname,
           'kind': element.kind,
           'description': element.description || '',
+          'see': element.see,
           'access': element.access || '',
           'virtual': !!element.virtual
         };
@@ -80,6 +82,7 @@ function graft(parentNode, childNodes, parentLongname) {
           'scope': element.scope,
           'virtual': !!element.virtual,
           'description': element.description || '',
+          'see': element.see,
           'parameters': [],
           'examples': []
         };
@@ -126,6 +129,7 @@ function graft(parentNode, childNodes, parentLongname) {
           'access': element.access || '',
           'virtual': !!element.virtual,
           'description': element.description || '',
+          'see': element.see,
           'type': element.type ? (element.type.length === 1 ? element.type[0] : element.type) : ''
         });
       } else if (element.kind === 'event') {
@@ -143,6 +147,7 @@ function graft(parentNode, childNodes, parentLongname) {
           'access': element.access || '',
           'virtual': !!element.virtual,
           'description': element.description || '',
+          'see': element.see,
           'parameters': [],
           'examples': []
         };
@@ -188,6 +193,7 @@ function graft(parentNode, childNodes, parentLongname) {
           'longname': element.longname,
           'kind': element.kind,
           'description': element.description || '',
+          'see': element.see,
           'examples': []
         };
 
@@ -213,6 +219,7 @@ function graft(parentNode, childNodes, parentLongname) {
           'longname': element.longname,
           'kind': element.kind,
           'description': element.classdesc || '',
+          'see': element.see,
           'extends': element.augments || null,
           'access': element.access || '',
           'virtual': !!element.virtual,

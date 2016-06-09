@@ -41,17 +41,17 @@ In addition to executing tasks from the console you can also chain the gulp doc 
 
 ## Modules
 
-* [build-doc](#module.build-doc)
+* [build-doc](#module_build-doc)
   * Functions
-  * [registerTasks](#module.build-doc~registerTasks)
+  * [registerTasks](#module_build-doc~registerTasks)
 
 
-<br/><a name="module.build-doc"></a>
+<br/><a name="module_build-doc"></a>
 ## **build-doc** (module)  
 Register gulp tasks used to generate documentation using jsdoc.  
 
 ### **Functions**  
-<a name="module.build-doc~registerTasks"></a>
+<a name="module_build-doc~registerTasks"></a>
 ## registerTasks(opts) ⇒ void  
 Register documentation generation tasks.  
   

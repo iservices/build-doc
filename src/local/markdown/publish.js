@@ -30,16 +30,25 @@ exports.publish = function (data, options) {
   var insert = -1;
   var template = '';
   var out = null;
+  var destination = opts.destination;
+
+  if (!opts.destination) {
+    throw new Error('destination must be provided in the provided options.');
+  }
+
+  // setup output stream
+  mkdirp.sync(path.dirname(opts.destination));
+
+  if (opts.destination[opts.destination.length - 1] === '/' || opts.destination[opts.destination.length - 1] === '\\') {
+    destination = destination + 'README.md';
+  }
+  out = fs.createWriteStream(destination);
 
   // read in template if one is specified
   if (opts.query && opts.query.template) {
     template = fs.readFileSync(opts.query.template);
     insert = template.indexOf('{{jsdoc}}');
   }
-
-  // setup output stream
-  mkdirp.sync(path.dirname(opts.destination));
-  out = fs.createWriteStream(opts.destination);
 
   // format the data for printing
   data({ undocumented: true }).remove();

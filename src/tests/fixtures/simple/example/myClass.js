@@ -18,6 +18,7 @@ export default class MyClass extends MyABCClass {
 
   /**
    * A test function.
+   * @see MyClass.myStaticFunc
    * @param {string} [paramX] - Parameter x.
    * has a lengthy | lengthy
    * description ok.
@@ -44,8 +45,9 @@ export default class MyClass extends MyABCClass {
   }
 
   /**
-   * An example property
+   * An example property just like {@link MyClass#testFunc}
    * @type {number|string}
+   * @see {@link http://github.com|GitHub}
    */
   get exampleProperty() {
     return this.p;
