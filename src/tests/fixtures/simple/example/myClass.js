@@ -48,6 +48,7 @@ export default class MyClass extends MyABCClass {
    * An example property just like {@link MyClass#testFunc}
    * @type {number|string}
    * @see {@link http://github.com|GitHub}
+   * @see MyClass.testFunc
    */
   get exampleProperty() {
     return this.p;

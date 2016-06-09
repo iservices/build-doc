@@ -313,11 +313,11 @@ function writeExamples(node, out) {
 function writeSees(node, out) {
   var result = [];
   if (node && node.see && node.see.length) {
-    out.write('** See:** ');
+    out.write('** See:**  \n* ');
     node.see.forEach(function (see) {
-      result.push(formatLink(see));
+      result.push(escapeLink(see, true));
     });
-    out.write(result.join(', ') + '  \n');
+    out.write(result.join('  \n* ') + '  \n');
   }
 }
 
@@ -351,14 +351,9 @@ function writeFunction(node, out) {
   }
 
   out.write('\n');
-
-  if (node.examples && node.examples.length) {
-    writeExamples(node, out);
-  }
-
+  writeExamples(node, out);
   writeSees(node, out);
-
-  out.write('\n');
+  out.write('\n<br/>\n');
 }
 
 /**
@@ -379,6 +374,11 @@ function writeMember(node, out) {
     out.write(createBlockText(node.description) + '  \n');
   }
   out.write('  \n');
+
+  out.write('\n');
+  writeExamples(node, out);
+  writeSees(node, out);
+  out.write('\n<br/>\n');
 }
 
 /**
@@ -392,7 +392,7 @@ function writeMember(node, out) {
 function printCollection(items, title, out) {
   if (items) {
     if (title) {
-      out.write('### **' + title + '**  \n');
+      out.write('### **' + title + '**  \n<br/>\n');
     }
     items.forEach(function (item) {
       printNode(item, out); // eslint-disable-line no-use-before-define
@@ -422,7 +422,7 @@ function printNode(node, out) {
     } else {
       out.write('## **' + node.name + '** (class)  \n');
     }
-    out.write(createBlockText(node.description) + '  \n\n');
+    out.write(createBlockText(node.description) + '  \n<br/>\n');
     writeFunction(node.constructor, out);
   } else if (node.kind === 'module') {
     //
@@ -433,6 +433,7 @@ function printNode(node, out) {
     out.write(createBlockText(node.description) + '  \n\n');
     writeExamples(node, out);
     writeSees(node, out);
+    out.write('\n<br/>\n');
   } else if (node.kind === 'function') {
     //
     // function
