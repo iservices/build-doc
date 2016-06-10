@@ -232,7 +232,7 @@ function createSignature(node) {
         // details about another paramter.
         return;
       } else if (param.optional) {
-        params.push(param.name + '<sub><small>opt</small></sub>');
+        params.push(param.name + 'ᵒᵖᵗ');
       } else {
         params.push(param.name);
       }
@@ -353,7 +353,7 @@ function writeFunction(node, out) {
   out.write('\n');
   writeExamples(node, out);
   writeSees(node, out);
-  out.write('\n<br/>\n');
+  out.write('\n\n');
 }
 
 /**
@@ -378,7 +378,7 @@ function writeMember(node, out) {
   out.write('\n');
   writeExamples(node, out);
   writeSees(node, out);
-  out.write('\n<br/>\n');
+  out.write('\n\n');
 }
 
 /**
@@ -392,7 +392,7 @@ function writeMember(node, out) {
 function printCollection(items, title, out) {
   if (items) {
     if (title) {
-      out.write('### **' + title + '**  \n<br/>\n');
+      out.write('### *' + title + '*  \n\n');
     }
     items.forEach(function (item) {
       printNode(item, out); // eslint-disable-line no-use-before-define
@@ -416,24 +416,24 @@ function printNode(node, out) {
     //
     // class
     //
-    out.write('<br/><a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
+    out.write('<a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
     if (node.extends) {
       out.write('## **' + node.name + '** (class extends ' + node.extends + ')  \n');
     } else {
       out.write('## **' + node.name + '** (class)  \n');
     }
-    out.write(createBlockText(node.description) + '  \n<br/>\n');
+    out.write(createBlockText(node.description) + '  \n\n');
     writeFunction(node.constructor, out);
   } else if (node.kind === 'module') {
     //
     // module
     //
-    out.write('<br/><a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
+    out.write('<a name="' + escapeText(node.longname, { longname: true }) + '"></a>\n');
     out.write('## **' + node.name + '** (module)  \n');
     out.write(createBlockText(node.description) + '  \n\n');
     writeExamples(node, out);
     writeSees(node, out);
-    out.write('\n<br/>\n');
+    out.write('\n\n');
   } else if (node.kind === 'function') {
     //
     // function

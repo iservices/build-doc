@@ -1,13 +1,13 @@
 {
   "name": "build-doc",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Build tasks for creating documentation.",
   "main": "src/index.js",
   "files": [
     "src/local/"
   ],
   "scripts": {
-    "pre-publish": "gulp test",
+    "pre-publish": "gulp test-without-coverage && gulp doc",
     "test": "gulp test-without-coverage",
     "doc": "gulp doc"
   },
